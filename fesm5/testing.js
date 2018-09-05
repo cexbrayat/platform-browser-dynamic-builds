@@ -1,10 +1,10 @@
 /**
- * @license Angular v5.1.0-beta.0-21bfaf226
- * (c) 2010-2017 Google, Inc. https://angular.io/
+ * @license Angular v7.0.0-beta.4-a2418a9037
+ * (c) 2010-2018 Google, Inc. https://angular.io/
  * License: MIT
  */
 import { COMPILER_OPTIONS, CompilerFactory, Component, Directive, Inject, Injectable, Injector, NgModule, Pipe, createPlatformFactory, ɵstringify } from '@angular/core';
-import { TestComponentRenderer, ɵTestingCompilerFactory } from '@angular/core/testing';
+import { TestComponentRenderer, ɵMetadataOverrider, ɵTestingCompilerFactory } from '@angular/core/testing';
 import { ɵINTERNAL_BROWSER_DYNAMIC_PLATFORM_PROVIDERS, ɵplatformCoreDynamic } from '@angular/platform-browser-dynamic';
 import { BrowserTestingModule } from '@angular/platform-browser/testing';
 import { __extends } from 'tslib';
@@ -14,7 +14,7 @@ import { MockDirectiveResolver, MockNgModuleResolver, MockPipeResolver } from '@
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes} checked by tsc
+ * @suppress {checkTypes,extraRequire,uselessCode} checked by tsc
  */
 /**
  * @license
@@ -26,9 +26,9 @@ import { MockDirectiveResolver, MockNgModuleResolver, MockPipeResolver } from '@
 /**
  * A DOM based implementation of the TestComponentRenderer.
  */
-var DOMTestComponentRenderer = (function (_super) {
+var DOMTestComponentRenderer = /** @class */ (function (_super) {
     __extends(DOMTestComponentRenderer, _super);
-    function DOMTestComponentRenderer(_doc /** TODO #9100 */) {
+    function DOMTestComponentRenderer(_doc) {
         var _this = _super.call(this) || this;
         _this._doc = _doc;
         return _this;
@@ -42,10 +42,11 @@ var DOMTestComponentRenderer = (function (_super) {
      * @return {?}
      */
     function (rootElId) {
-        var /** @type {?} */ rootEl = /** @type {?} */ (ɵgetDOM().firstChild(ɵgetDOM().content(ɵgetDOM().createTemplate("<div id=\"" + rootElId + "\"></div>"))));
-        // TODO(juliemr): can/should this be optional?
-        var /** @type {?} */ oldRoots = ɵgetDOM().querySelectorAll(this._doc, '[id^=root]');
-        for (var /** @type {?} */ i = 0; i < oldRoots.length; i++) {
+        /** @type {?} */
+        var rootEl = /** @type {?} */ (ɵgetDOM().firstChild(ɵgetDOM().content(ɵgetDOM().createTemplate("<div id=\"" + rootElId + "\"></div>"))));
+        /** @type {?} */
+        var oldRoots = ɵgetDOM().querySelectorAll(this._doc, '[id^=root]');
+        for (var i = 0; i < oldRoots.length; i++) {
             ɵgetDOM().remove(oldRoots[i]);
         }
         ɵgetDOM().appendChild(this._doc.body, rootEl);
@@ -55,14 +56,14 @@ var DOMTestComponentRenderer = (function (_super) {
     ];
     /** @nocollapse */
     DOMTestComponentRenderer.ctorParameters = function () { return [
-        { type: undefined, decorators: [{ type: Inject, args: [DOCUMENT,] },] },
+        { type: undefined, decorators: [{ type: Inject, args: [DOCUMENT,] }] }
     ]; };
     return DOMTestComponentRenderer;
 }(TestComponentRenderer));
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes} checked by tsc
+ * @suppress {checkTypes,extraRequire,uselessCode} checked by tsc
  */
 /**
  * @license
@@ -71,172 +72,10 @@ var DOMTestComponentRenderer = (function (_super) {
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
-var _nextReferenceId = 0;
-var MetadataOverrider = (function () {
-    function MetadataOverrider() {
-        this._references = new Map();
-    }
-    /**
-     * Creates a new instance for the given metadata class
-     * based on an old instance and overrides.
-     */
-    /**
-     * Creates a new instance for the given metadata class
-     * based on an old instance and overrides.
-     * @template C, T
-     * @param {?} metadataClass
-     * @param {?} oldMetadata
-     * @param {?} override
-     * @return {?}
-     */
-    MetadataOverrider.prototype.overrideMetadata = /**
-     * Creates a new instance for the given metadata class
-     * based on an old instance and overrides.
-     * @template C, T
-     * @param {?} metadataClass
-     * @param {?} oldMetadata
-     * @param {?} override
-     * @return {?}
-     */
-    function (metadataClass, oldMetadata, override) {
-        var /** @type {?} */ props = {};
-        if (oldMetadata) {
-            _valueProps(oldMetadata).forEach(function (prop) { return props[prop] = (/** @type {?} */ (oldMetadata))[prop]; });
-        }
-        if (override.set) {
-            if (override.remove || override.add) {
-                throw new Error("Cannot set and add/remove " + ɵstringify(metadataClass) + " at the same time!");
-            }
-            setMetadata(props, override.set);
-        }
-        if (override.remove) {
-            removeMetadata(props, override.remove, this._references);
-        }
-        if (override.add) {
-            addMetadata(props, override.add);
-        }
-        return new metadataClass(/** @type {?} */ (props));
-    };
-    return MetadataOverrider;
-}());
-/**
- * @param {?} metadata
- * @param {?} remove
- * @param {?} references
- * @return {?}
- */
-function removeMetadata(metadata, remove, references) {
-    var /** @type {?} */ removeObjects = new Set();
-    var _loop_1 = function (prop) {
-        var /** @type {?} */ removeValue = remove[prop];
-        if (removeValue instanceof Array) {
-            removeValue.forEach(function (value) { removeObjects.add(_propHashKey(prop, value, references)); });
-        }
-        else {
-            removeObjects.add(_propHashKey(prop, removeValue, references));
-        }
-    };
-    for (var /** @type {?} */ prop in remove) {
-        _loop_1(prop);
-    }
-    var _loop_2 = function (prop) {
-        var /** @type {?} */ propValue = metadata[prop];
-        if (propValue instanceof Array) {
-            metadata[prop] = propValue.filter(function (value) { return !removeObjects.has(_propHashKey(prop, value, references)); });
-        }
-        else {
-            if (removeObjects.has(_propHashKey(prop, propValue, references))) {
-                metadata[prop] = undefined;
-            }
-        }
-    };
-    for (var /** @type {?} */ prop in metadata) {
-        _loop_2(prop);
-    }
-}
-/**
- * @param {?} metadata
- * @param {?} add
- * @return {?}
- */
-function addMetadata(metadata, add) {
-    for (var /** @type {?} */ prop in add) {
-        var /** @type {?} */ addValue = add[prop];
-        var /** @type {?} */ propValue = metadata[prop];
-        if (propValue != null && propValue instanceof Array) {
-            metadata[prop] = propValue.concat(addValue);
-        }
-        else {
-            metadata[prop] = addValue;
-        }
-    }
-}
-/**
- * @param {?} metadata
- * @param {?} set
- * @return {?}
- */
-function setMetadata(metadata, set) {
-    for (var /** @type {?} */ prop in set) {
-        metadata[prop] = set[prop];
-    }
-}
-/**
- * @param {?} propName
- * @param {?} propValue
- * @param {?} references
- * @return {?}
- */
-function _propHashKey(propName, propValue, references) {
-    var /** @type {?} */ replacer = function (key, value) {
-        if (typeof value === 'function') {
-            value = _serializeReference(value, references);
-        }
-        return value;
-    };
-    return propName + ":" + JSON.stringify(propValue, replacer);
-}
-/**
- * @param {?} ref
- * @param {?} references
- * @return {?}
- */
-function _serializeReference(ref, references) {
-    var /** @type {?} */ id = references.get(ref);
-    if (!id) {
-        id = "" + ɵstringify(ref) + _nextReferenceId++;
-        references.set(ref, id);
-    }
-    return id;
-}
-/**
- * @param {?} obj
- * @return {?}
- */
-function _valueProps(obj) {
-    var /** @type {?} */ props = [];
-    // regular public props
-    Object.keys(obj).forEach(function (prop) {
-        if (!prop.startsWith('_')) {
-            props.push(prop);
-        }
-    });
-    // getters
-    var /** @type {?} */ proto = obj;
-    while (proto = Object.getPrototypeOf(proto)) {
-        Object.keys(proto).forEach(function (protoProp) {
-            var /** @type {?} */ desc = Object.getOwnPropertyDescriptor(proto, protoProp);
-            if (!protoProp.startsWith('_') && desc && 'get' in desc) {
-                props.push(protoProp);
-            }
-        });
-    }
-    return props;
-}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes} checked by tsc
+ * @suppress {checkTypes,extraRequire,uselessCode} checked by tsc
  */
 /**
  * @license
@@ -245,6 +84,7 @@ function _valueProps(obj) {
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
+/** @type {?} */
 var COMPILER_PROVIDERS = [
     { provide: MockPipeResolver, deps: [CompileReflector] },
     { provide: PipeResolver, useExisting: MockPipeResolver },
@@ -253,7 +93,7 @@ var COMPILER_PROVIDERS = [
     { provide: MockNgModuleResolver, deps: [CompileReflector] },
     { provide: NgModuleResolver, useExisting: MockNgModuleResolver },
 ];
-var TestingCompilerFactoryImpl = (function () {
+var TestingCompilerFactoryImpl = /** @class */ (function () {
     function TestingCompilerFactoryImpl(_injector, _compilerFactory) {
         this._injector = _injector;
         this._compilerFactory = _compilerFactory;
@@ -267,18 +107,19 @@ var TestingCompilerFactoryImpl = (function () {
      * @return {?}
      */
     function (options) {
-        var /** @type {?} */ compiler = /** @type {?} */ (this._compilerFactory.createCompiler(options));
+        /** @type {?} */
+        var compiler = /** @type {?} */ (this._compilerFactory.createCompiler(options));
         return new TestingCompilerImpl(compiler, compiler.injector.get(MockDirectiveResolver), compiler.injector.get(MockPipeResolver), compiler.injector.get(MockNgModuleResolver));
     };
     return TestingCompilerFactoryImpl;
 }());
-var TestingCompilerImpl = (function () {
+var TestingCompilerImpl = /** @class */ (function () {
     function TestingCompilerImpl(_compiler, _directiveResolver, _pipeResolver, _moduleResolver) {
         this._compiler = _compiler;
         this._directiveResolver = _directiveResolver;
         this._pipeResolver = _pipeResolver;
         this._moduleResolver = _moduleResolver;
-        this._overrider = new MetadataOverrider();
+        this._overrider = new ɵMetadataOverrider();
     }
     Object.defineProperty(TestingCompilerImpl.prototype, "injector", {
         get: /**
@@ -378,7 +219,8 @@ var TestingCompilerImpl = (function () {
      */
     function (ngModule, override) {
         this.checkOverrideAllowed(ngModule);
-        var /** @type {?} */ oldMetadata = this._moduleResolver.resolve(ngModule, false);
+        /** @type {?} */
+        var oldMetadata = this._moduleResolver.resolve(ngModule, false);
         this._moduleResolver.setNgModule(ngModule, this._overrider.overrideMetadata(NgModule, oldMetadata, override));
         this.clearCacheFor(ngModule);
     };
@@ -394,7 +236,8 @@ var TestingCompilerImpl = (function () {
      */
     function (directive, override) {
         this.checkOverrideAllowed(directive);
-        var /** @type {?} */ oldMetadata = this._directiveResolver.resolve(directive, false);
+        /** @type {?} */
+        var oldMetadata = this._directiveResolver.resolve(directive, false);
         this._directiveResolver.setDirective(directive, this._overrider.overrideMetadata(Directive, /** @type {?} */ ((oldMetadata)), override));
         this.clearCacheFor(directive);
     };
@@ -410,7 +253,8 @@ var TestingCompilerImpl = (function () {
      */
     function (component, override) {
         this.checkOverrideAllowed(component);
-        var /** @type {?} */ oldMetadata = this._directiveResolver.resolve(component, false);
+        /** @type {?} */
+        var oldMetadata = this._directiveResolver.resolve(component, false);
         this._directiveResolver.setDirective(component, this._overrider.overrideMetadata(Component, /** @type {?} */ ((oldMetadata)), override));
         this.clearCacheFor(component);
     };
@@ -426,7 +270,8 @@ var TestingCompilerImpl = (function () {
      */
     function (pipe, override) {
         this.checkOverrideAllowed(pipe);
-        var /** @type {?} */ oldMetadata = this._pipeResolver.resolve(pipe, false);
+        /** @type {?} */
+        var oldMetadata = this._pipeResolver.resolve(pipe, false);
         this._pipeResolver.setPipe(pipe, this._overrider.overrideMetadata(Pipe, oldMetadata, override));
         this.clearCacheFor(pipe);
     };
@@ -464,12 +309,23 @@ var TestingCompilerImpl = (function () {
      * @return {?}
      */
     function (error) { return (/** @type {?} */ (error))[ERROR_COMPONENT_TYPE] || null; };
+    /**
+     * @param {?} moduleType
+     * @return {?}
+     */
+    TestingCompilerImpl.prototype.getModuleId = /**
+     * @param {?} moduleType
+     * @return {?}
+     */
+    function (moduleType) {
+        return this._moduleResolver.resolve(moduleType, true).id;
+    };
     return TestingCompilerImpl;
 }());
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes} checked by tsc
+ * @suppress {checkTypes,extraRequire,uselessCode} checked by tsc
  */
 /**
  * @license
@@ -478,11 +334,11 @@ var TestingCompilerImpl = (function () {
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
-/**
+/** *
  * Platform for dynamic tests
  *
  * \@experimental
- */
+  @type {?} */
 var platformCoreDynamicTesting = createPlatformFactory(ɵplatformCoreDynamic, 'coreDynamicTesting', [
     { provide: COMPILER_OPTIONS, useValue: { providers: COMPILER_PROVIDERS }, multi: true }, {
         provide: ɵTestingCompilerFactory,
@@ -493,7 +349,7 @@ var platformCoreDynamicTesting = createPlatformFactory(ɵplatformCoreDynamic, 'c
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes} checked by tsc
+ * @suppress {checkTypes,extraRequire,uselessCode} checked by tsc
  */
 /**
  * @license
@@ -505,7 +361,7 @@ var platformCoreDynamicTesting = createPlatformFactory(ɵplatformCoreDynamic, 'c
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes} checked by tsc
+ * @suppress {checkTypes,extraRequire,uselessCode} checked by tsc
  */
 /**
  * @license
@@ -514,16 +370,14 @@ var platformCoreDynamicTesting = createPlatformFactory(ɵplatformCoreDynamic, 'c
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
-/**
- * \@stable
- */
+/** @type {?} */
 var platformBrowserDynamicTesting = createPlatformFactory(platformCoreDynamicTesting, 'browserDynamicTesting', ɵINTERNAL_BROWSER_DYNAMIC_PLATFORM_PROVIDERS);
 /**
  * NgModule for testing.
  *
- * \@stable
+ *
  */
-var BrowserDynamicTestingModule = (function () {
+var BrowserDynamicTestingModule = /** @class */ (function () {
     function BrowserDynamicTestingModule() {
     }
     BrowserDynamicTestingModule.decorators = [
@@ -534,14 +388,12 @@ var BrowserDynamicTestingModule = (function () {
                     ]
                 },] },
     ];
-    /** @nocollapse */
-    BrowserDynamicTestingModule.ctorParameters = function () { return []; };
     return BrowserDynamicTestingModule;
 }());
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes} checked by tsc
+ * @suppress {checkTypes,extraRequire,uselessCode} checked by tsc
  */
 /**
  * @license
@@ -558,7 +410,7 @@ var BrowserDynamicTestingModule = (function () {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes} checked by tsc
+ * @suppress {checkTypes,extraRequire,uselessCode} checked by tsc
  */
 /**
  * Generated bundle index. Do not edit.
